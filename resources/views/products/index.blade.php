@@ -1,26 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Katalog rastlín</title>
-</head>
-<body>
-    <h1>Zoznam rastlín</h1>
-    <a href="{{ route('products.create') }}">Pridať nový produkt</a>
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h1>Zoznam produktov</h1>
+
     @if(session('success'))
-    <p style="color: green;">{{ session('success') }}</p>
+        <div style="color: green; margin-bottom: 15px;">
+            {{ session('success') }}
+        </div>
     @endif
-    <ul>
-        @foreach($products as $product)
-            <li>
-                <h2>{{ $product->name }}</h2>
-                <p>{{ $product->description }}</p>
-                <p>Cena: {{ $product->price }} €</p>
-                <p>Dostupnosť: {{ $product->stock > 0 ? 'Skladom' : 'Nedostupné' }}</p>
-            </li>
-        @endforeach
-    </ul>
-</body>
-</html>
+
+    <a href="{{ route('products.create') }}">Pridať nový produkt</a>
+
+    <br><br>
+
+    @if($products->count())
+        <table border="1" cellpadding="10" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Obrázok</th>
+                    <th>Názov</th>
+                    <th>Cena</th>
+                    <th>Kategória</th>
+                    <th>Popis</th>
+                    <th>Akcie</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($products as $product)
+                    <tr>
+                        <td>
+                            @if($product->image)
+                                <img src="{{ asset('storage/' . $product->image) }}" width="100">
+                            @else
+                                Bez obrázka
+                            @endif
+                        </td>
+                        <td>{{ $product->name }}</td>
+                        <td>{{ $product->price }} €</td>
+                        <td>{{ $product->category ? $product->category->name : 'Bez kategórie' }}</td>
+                        <td>{{ $product->description }}</td>
+                        <td>
+                            <a href="{{ route('products.show', $product) }}">Detail</a> |
+                            <a href="{{ route('products.edit', $product) }}">Upraviť</a>
+
+                            <form action="{{ route('products.destroy', $product) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" onclick="return confirm('Naozaj chcete vymazať tento produkt?')">
+                                    Vymazať
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p>Zatiaľ nie sú pridané žiadne produkty.</p>
+    @endif
+</div>
+@endsection
