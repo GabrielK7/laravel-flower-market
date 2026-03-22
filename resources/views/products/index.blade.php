@@ -9,7 +9,27 @@
             {{ session('success') }}
         </div>
     @endif
+    <h5>Filtrovanie produktov</h5>
+<form method="GET" action="{{ route('products.index') }}" style="margin-bottom: 20px;">
+    <input 
+        type="text" 
+        name="search" 
+        placeholder="Hľadať podľa názvu..."
+        value="{{ request('search') }}"
+    >
 
+    <select name="category">
+        <option value="">Všetky kategórie</option>
+        @foreach($categories as $category)
+            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+
+    <button type="submit">Filtrovať</button>
+    <a href="{{ route('products.index') }}">Resetovať</a>
+</form>
     <a href="{{ route('products.create') }}">Pridať nový produkt</a>
 
     <br><br>
@@ -56,6 +76,9 @@
                 @endforeach
             </tbody>
         </table>
+        <div style="margin-top: 20px;">
+    {{ $products->links() }}
+</div>
     @else
         <p>Zatiaľ nie sú pridané žiadne produkty.</p>
     @endif
