@@ -2,82 +2,117 @@
 
 @section('content')
 <div class="container">
-    <h1>Zoznam produktov</h1>
+  
 
     @if(session('success'))
-        <div style="color: green; margin-bottom: 15px;">
+        <div class="alert alert-success" role="alert">
             {{ session('success') }}
         </div>
     @endif
-    <h5>Filtrovanie produktov</h5>
-<form method="GET" action="{{ route('products.index') }}" style="margin-bottom: 20px;">
-    <input 
-        type="text" 
-        name="search" 
-        placeholder="Hľadať podľa názvu..."
-        value="{{ request('search') }}"
-    >
+ 
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Zoznam produktov</h1>
+        <a href="{{ route('products.create') }}" class="btn btn-success">
+            Pridať nový produkt
+        </a>
+    </div>
 
-    <select name="category">
-        <option value="">Všetky kategórie</option>
-        @foreach($categories as $category)
-            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
-                {{ $category->name }}
-            </option>
-        @endforeach
-    </select>
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-    <button type="submit">Filtrovať</button>
-    <a href="{{ route('products.index') }}">Resetovať</a>
-</form>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Filtrovanie produktov</h5>
+
+            <form method="GET" action="{{ route('products.index') }}" class="row g-3">
+                <div class="col-md-5">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        class="form-control"
+                        placeholder="Hľadať podľa názvu..."
+                        value="{{ request('search') }}"
+                    >
+                </div>
+
+                <div class="col-md-4">
+                    <select name="category" class="form-select">
+                        <option value="">Všetky kategórie</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filtrovať</button>
+                </div>
+
+                <div class="col-md-1">
+                    <a href="{{ route('products.index') }}" class="btn btn-outline-secondary w-100">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
     <a href="{{ route('products.create') }}">Pridať nový produkt</a>
 
     <br><br>
 
     @if($products->count())
-        <table border="1" cellpadding="10" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>Obrázok</th>
-                    <th>Názov</th>
-                    <th>Cena</th>
-                    <th>Kategória</th>
-                    <th>Popis</th>
-                    <th>Akcie</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($products as $product)
-                    <tr>
-                        <td>
-                            @if($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}" width="100">
-                            @else
-                                Bez obrázka
-                            @endif
-                        </td>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ $product->price }} €</td>
-                        <td>{{ $product->category ? $product->category->name : 'Bez kategórie' }}</td>
-                        <td>{{ $product->description }}</td>
-                        <td>
-                            <a href="{{ route('products.show', $product) }}">Detail</a> |
-                            <a href="{{ route('products.edit', $product) }}">Upraviť</a>
+      <div class="row">
+    @forelse($products as $product)
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                @if($product->image)
+                    <img src="{{ asset('storage/' . $product->image) }}"
+                         class="card-img-top"
+                         alt="{{ $product->name }}"
+                         style="height: 220px; object-fit: cover;">
+                @endif
 
-                            <form action="{{ route('products.destroy', $product) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" onclick="return confirm('Naozaj chcete vymazať tento produkt?')">
-                                    Vymazať
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        <div style="margin-top: 20px;">
-    {{ $products->links() }}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ $product->name }}</h5>
+
+                    <p class="text-muted mb-1">
+                        {{ $product->category?->name ?? 'Bez kategórie' }}
+                    </p>
+
+                    <p class="card-text">
+                        {{ \Illuminate\Support\Str::limit($product->description, 70) }}
+                    </p>
+
+                    <p class="fw-bold mb-3">{{ $product->price }} €</p>
+
+                    <div class="mt-auto d-flex gap-2 flex-wrap">
+                        <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-primary">Detail</a>
+                        <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-warning">Upraviť</a>
+
+                        <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Naozaj chcete vymazať tento produkt?')">
+                                Vymazať
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @empty
+        <p>Žiadne produkty neboli nájdené.</p>
+    @endforelse
+</div>
+        <div class="mt-4">
+            Zobrazených {{ $products->count() }} z {{ $products->total() }} produktov
+    {{ $products->links() }} 
 </div>
     @else
         <p>Zatiaľ nie sú pridané žiadne produkty.</p>
