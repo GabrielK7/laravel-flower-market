@@ -7,7 +7,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h1 class="h3 mb-4">Pridať produkt</h1>
-
+<p>STORE URL: {{ route('products.store') }}</p>
                     <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 

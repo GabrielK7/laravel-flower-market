@@ -60,7 +60,12 @@
             </form>
         </div>
     </div>
-    <a href="{{ route('products.create') }}">Pridať nový produkt</a>
+@auth
+    <a href="{{ route('products.create') }}" class="btn btn-success">
+        Pridať produkt
+    </a>
+@endauth
+
 
     <br><br>
 
@@ -90,17 +95,23 @@
                     <p class="fw-bold mb-3">{{ $product->price }} €</p>
 
                     <div class="mt-auto d-flex gap-2 flex-wrap">
-                        <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-primary">Detail</a>
-                        <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-warning">Upraviť</a>
+                          <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-primary">Detail</a>
+                        @auth                        
+                        <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-warning">Upraviť</a>  
+                        @endauth
+                        
 
                         <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit"
+                            @auth
+                              <button type="submit"
                                     class="btn btn-sm btn-danger"
                                     onclick="return confirm('Naozaj chcete vymazať tento produkt?')">
                                 Vymazať
-                            </button>
+                            </button>  
+                            @endauth
+                            
                         </form>
                     </div>
                 </div>

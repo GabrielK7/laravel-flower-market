@@ -39,17 +39,23 @@
             </p>
 
             <div class="mt-auto">
-                <a href="{{ route('products.edit', $product) }}" class="btn btn-warning me-2">
+                @auth
+                    <a href="{{ route('products.edit', $product) }}" class="btn btn-warning me-2">
                     Upraviť
                 </a>
+                @endauth
+                
 
                 <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
-                    <button class="btn btn-danger"
+                    @auth
+                        <button class="btn btn-danger"
                             onclick="return confirm('Naozaj chcete vymazať tento produkt?')">
                         Vymazať
                     </button>
+                    @endauth
+                    
                 </form>
             </div>
 

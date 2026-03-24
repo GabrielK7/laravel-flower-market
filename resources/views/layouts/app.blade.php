@@ -10,21 +10,28 @@
 
     <header>
               <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('products.index') }}">
-            🌸 FlowerShop
+    <div class="d-flex align-items-center gap-2">
+    <a href="{{ route('products.index') }}" class="btn btn-outline-light">
+        Produkty
+    </a>
+
+    @auth
+        <a href="{{ route('products.create') }}" class="btn btn-success">
+            Pridať produkt
         </a>
 
-        <div>
-            <a href="{{ route('products.index') }}" class="btn btn-outline-light me-2">
-                Produkty
-            </a>
-
-            <a href="{{ route('products.create') }}" class="btn btn-success">
-                Pridať produkt
-            </a>
-        </div>
-    </div>
+        <form method="POST" action="{{ route('logout') }}" class="d-inline">
+            @csrf
+            <button type="submit" class="btn btn-warning">
+                Odhlásiť sa
+            </button>
+        </form>
+    @else
+        <a href="{{ route('login') }}" class="btn btn-outline-light">
+            Prihlásenie
+        </a>
+    @endauth
+</div>
 </nav>
 
         <hr>
