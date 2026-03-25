@@ -1,0 +1,25 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.btn-soft-green {
+    background-color: #6fbf73;
+    border: none;
+    color: white;
+}
+
+.btn-soft-green:hover {
+    background-color: #5aa863;
+}
+
+.logo {
+    letter-spacing: 0.5px;
+}
+.logo:hover {
+    opacity: 0.8;
+}

@@ -2,27 +2,17 @@
 
 @section('content')
 <div class="container">
-  
 
-    @if(session('success'))
-        <div class="alert alert-success" role="alert">
-            {{ session('success') }}
-        </div>
-    @endif
- 
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">Zoznam produktov</h1>
-        <a href="{{ route('products.create') }}" class="btn btn-success">
-            Pridať nový produkt
+   
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Zoznam produktov</h2>
+
+    @auth
+        <a href="{{ route('products.create') }}" class="btn btn-outline-success">
+            + Pridať produkt
         </a>
-    </div>
-
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+    @endauth
+</div>
 
     <div class="card shadow-sm mb-4">
         <div class="card-body">
@@ -51,7 +41,7 @@
                 </div>
 
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Filtrovať</button>
+                    <button type="submit" class="btn btn-outline-success w-100">Filtrovať</button>
                 </div>
 
                 <div class="col-md-1">
@@ -60,11 +50,7 @@
             </form>
         </div>
     </div>
-@auth
-    <a href="{{ route('products.create') }}" class="btn btn-success">
-        Pridať produkt
-    </a>
-@endauth
+
 
 
     <br><br>
@@ -85,7 +71,9 @@
                     <h5 class="card-title">{{ $product->name }}</h5>
 
                     <p class="text-muted mb-1">
-                        {{ $product->category?->name ?? 'Bez kategórie' }}
+                        <span class="badge text-bg-secondary">
+    {{ $product->category->name ?? '-' }}
+</span>
                     </p>
 
                     <p class="card-text">
@@ -94,10 +82,14 @@
 
                     <p class="fw-bold mb-3">{{ $product->price }} €</p>
 
-                    <div class="mt-auto d-flex gap-2 flex-wrap">
-                          <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-primary">Detail</a>
+                    <div class="mt-auto d-flex gap-2 flex-wrap ">
+                          <a href="{{ route('products.show', $product) }}" class="btn btn-sm btn-outline-primary">Detail</a>
+                          <form action="{{ route('cart.add', $product) }}" method="POST">
+    @csrf
+    <button class="btn btn-outline-success btn-sm"">Do košíka</button>
+</form>
                         @auth                        
-                        <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-warning">Upraviť</a>  
+                        <a href="{{ route('products.edit', $product) }}" class=" btn-sm btn btn-outline-warning">Upraviť</a>  
                         @endauth
                         
 
@@ -106,7 +98,7 @@
                             @method('DELETE')
                             @auth
                               <button type="submit"
-                                    class="btn btn-sm btn-danger"
+                                    class="btn btn-sm btn-outline-danger"
                                     onclick="return confirm('Naozaj chcete vymazať tento produkt?')">
                                 Vymazať
                             </button>  
