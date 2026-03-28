@@ -88,20 +88,21 @@
     @csrf
     <button class="btn btn-outline-success btn-sm"">Do košíka</button>
 </form>
-                        @auth                        
-                        <a href="{{ route('products.edit', $product) }}" class=" btn-sm btn btn-outline-warning">Upraviť</a>  
-                        @endauth
+                        @auth          
+                         @if(auth()->user()->role === 'admin')              
+                        <a href="{{ route('products.edit', $product) }}" class=" btn-sm btn btn-outline-warning">Upraviť</a>                 
                         
 
                         <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            @auth
+                            
                               <button type="submit"
                                     class="btn btn-sm btn-outline-danger"
                                     onclick="return confirm('Naozaj chcete vymazať tento produkt?')">
                                 Vymazať
                             </button>  
+                            @endif
                             @endauth
                             
                         </form>

@@ -6,6 +6,7 @@
     <title>@yield('title', 'FlowerMarket')</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body class="bg-light">
@@ -14,38 +15,65 @@
     <div class="container d-flex justify-content-between align-items-center py-3">
 
         <!-- LOGO -->
-     <span class="logo fw-bold fs-5">
-    🌿<span style="color:#e91e63;">Flower</span><span style="color:#4CAF50;">Market</span>
+     <a href="{{ route('products.index') }}" class="d-flex align-items-center gap-3 text-decoration-none">
+    <img src="{{ asset('images/logo.png') }}" alt="FlowerMarket" style="height:62px; width:auto;">
+
+    <span style="
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        font-weight: 600;
+        color: #355e3b;
+        line-height: 1;
+    ">
+        FlowerMarket
+    </span>
+</a>
+
+       <!-- MENU -->
+<div class="d-flex align-items-center gap-2">
+
+    <a href="{{ route('products.index') }}"
+       class="text-decoration-none fw-semibold"
+style="color:#355e3b;">
+        Produkty
+    </a>
+
+    @auth
+       
+            Prihlásený: <span class="text-muted small me-1">
+    {{ auth()->user()->name }} ({{ auth()->user()->role }})
 </span>
+       
 
-        <!-- MENU -->
-        <div class="d-flex align-items-center gap-3">
+        <form action="{{ route('logout') }}" method="POST" class="m-0">
+            @csrf
+            <button class="btn nav-btn nav-btn-secondary">
+                Odhlásiť
+            </button>
+        </form>
+    @endauth
 
-            <a href="{{ route('products.index') }}"
-               class="text-decoration-none text-dark small fw-semibold">
-                Produkty
-            </a>
+    @guest
+        <a href="{{ route('login') }}" class="btn nav-btn nav-btn-primary">
+            Prihlásiť
+        </a>
+    @endguest
 
-            @auth
-                <span class="text-muted small">
-    Prihlásený: Admin
-</span>
+    <a href="{{ route('cart.index') }}" class="btn nav-btn nav-btn-primary position-relative">
+        🛒 Košík
+       @php
+    $cartKey = auth()->check() ? 'cart_user_' . auth()->id() : 'cart_guest';
+    $cart = session($cartKey, []);
+    $cartCount = array_sum(array_column($cart, 'quantity'));
+@endphp
 
-                <form action="{{ route('logout') }}" method="POST" class="m-0">
-                    @csrf
-                    <button class="btn btn-outline-secondary btn-sm">
-                        Odhlásiť
-                    </button>
-                </form>
-            @endauth
-
-            @guest
-                <a href="{{ route('login') }}" class="btn btn-outline-success btn-sm">
-                    Prihlásiť
-                </a>
-            @endguest
-
-        </div>
+        @if($cartCount > 0)
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
+                {{ $cartCount }}
+            </span>
+        @endif
+    </a>
+</div>
     </div>
 </nav>
 
